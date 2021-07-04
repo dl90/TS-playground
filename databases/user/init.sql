@@ -7,7 +7,6 @@ USE user;
 DROP ROLE IF EXISTS 'user_db_query';
 CREATE ROLE 'user_db_query';
 GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON user.* TO 'user_db_query';
-FLUSH PRIVILEGES;
 
 
 DROP USER IF EXISTS 'user_db'@'%';
