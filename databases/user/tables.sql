@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE `user` (
   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `email`          VARCHAR(255) UNIQUE NOT NULL,
   `created_at`     TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -6,7 +6,7 @@ CREATE TABLE user (
   `last_accessed`  TIMESTAMP
 );
 
-CREATE TABLE profile (
+CREATE TABLE `profile` (
   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `user_id`        INT UNSIGNED UNIQUE NOT NULL,
   `first_name`     VARCHAR(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE profile (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE password (
+CREATE TABLE `password` (
   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `user_id`        INT UNSIGNED UNIQUE NOT NULL,
   `hash`           CHAR(97) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE password (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE oauth (
+CREATE TABLE `oauth` (
   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `user_id`        INT UNSIGNED NOT NULL,
   `provider`       VARCHAR(255) NOT NULL,

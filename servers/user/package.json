@@ -2,18 +2,25 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -w",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "start": "node dist/server.js",
+    "dev": "ts-node server.ts",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/connect-redis": "^0.0.16",
     "@types/node": "^15.14.0",
+    "@types/redis": "^2.8.30",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.5"
   },
@@ -21,7 +28,13 @@
     "argon2": "^0.28.2",
     "dotenv": "^10.0.0",
     "fastify": "^3.18.1",
-    "mysql2": "^2.2.5",
-    "reflect-metadata": "^0.1.13"
+    "fastify-autoload": "^3.8.0",
+    "fastify-cookie": "^5.3.1",
+    "fastify-csrf": "^3.1.0",
+    "fastify-helmet": "^5.3.2",
+    "fastify-mysql": "^2.1.0",
+    "fastify-plugin": "^3.0.0",
+    "fastify-redis": "^4.3.1",
+    "redis": "^3.1.2"
   }
 }
