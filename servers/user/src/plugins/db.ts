@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { FastifyPluginOptions } from 'fastify'
+import { FastifyInstance, FastifyPluginOptions, FastifyPluginAsync } from 'fastify'
 import fastifyMySQL, { MySQLPromisePool } from 'fastify-mysql'
 import { RedisClient, ClientOpts } from 'redis'
 import fastifyRedis, { FastifyRedisPlugin } from 'fastify-redis'
@@ -12,7 +12,7 @@ declare module 'fastify' {
   }
 }
 
-export default fp(async (fastify, opts: FastifyPluginOptions) => {
+const dbs: FastifyPluginAsync = async (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
   fastify.register(fastifyMySQL, {
     promise: true,
     ...mysqlConfig
@@ -23,4 +23,6 @@ export default fp(async (fastify, opts: FastifyPluginOptions) => {
     closeClient: true,
     client: redisClient
   } as FastifyRedisPlugin)
-})
+}
+
+export default fp(dbs)
