@@ -1,0 +1,11 @@
+@host = http://localhost:3000
+@route = /auth/register
+
+### register
+POST {{host}}{{route}} HTTP/1.1
+content-type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "Test!123"
+}

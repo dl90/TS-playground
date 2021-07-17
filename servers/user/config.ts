@@ -1,10 +1,11 @@
 import dotenv from 'dotenv'
 import crypto from 'crypto'
 import { argon2id } from 'argon2'
+import fs from 'fs'
 
 dotenv.config()
 
-function requiredEnv (name: string) {
+const requiredEnv = (name: string) => {
   if (process.env[name] === undefined)
     throw new Error(`missing env ${name}`)
 
@@ -34,29 +35,38 @@ export const redisConfig = {
 }
 
 export const cookieConfig = {
-  secret: process.env.CSRF_SECRET || crypto.randomBytes(32).toString('hex'),
+  secret: process.env.COOKIE_SECRET || crypto.randomBytes(32).toString('hex'),
   path: '/',
   sameSite: true,
   httpOnly: true,
-  signed: true,
-  expires: 60 * 60 * 24 * 7
+  signed: true
 }
 
 export const csrfConfig = {
   cookieOpts: { signed: true }
 }
 
-export const accessTokenConfig = {
-  secret: process.env.JWT_ACCESS_SECRET || crypto.randomBytes(32).toString('hex'),
-  sign: {
-    issuer: process.env.JWT_ACCESS_ISSUER || 'localhost',
-    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '10min'
+export const jwtConfig = {
+  secret: {
+    public: fs.readFileSync(__dirname + '/keys/jwt.RS256.public.key'),
+    private: fs.readFileSync(__dirname + '/keys/jwt.RS256.private.key')
   },
-  verify: { issuer: process.env.JWT_ACCESS_ISSUER || 'localhost' },
+  sign: {
+    algorithm: 'RS256',
+    issuer: process.env.JWT_ISSUER || 'localhost'
+  },
+  verify: { issuer: process.env.JWT_ISSUER || 'localhost' },
+}
+
+export const accessTokenConfig = {
+  expiresIn: +(process.env.JWT_ACCESS_EXPIRES_IN || 600) // 10min
 }
 
 export const refreshTokenConfig = {
-  size: 128
+  name: 'refreshToken',
+  sign: {
+    expiresIn: +(process.env.JWT_REFRESH_EXPIRES_IN || 10) // 7 days
+  }
 }
 
 export const argon2Config = {

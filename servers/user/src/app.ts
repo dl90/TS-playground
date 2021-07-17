@@ -2,7 +2,7 @@ import fastify, { FastifyServerOptions } from 'fastify'
 import autoload from 'fastify-autoload'
 import { join } from 'path'
 
-export default async function (opts: FastifyServerOptions) {
+export default async (opts: FastifyServerOptions) => {
   const app = fastify(opts)
 
   app.register(autoload, {
@@ -10,7 +10,7 @@ export default async function (opts: FastifyServerOptions) {
   })
 
   app.register(autoload, {
-    dir: join(__dirname, 'routes')
+    dir: join(__dirname, 'modules')
   })
 
   return app

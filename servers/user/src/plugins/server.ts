@@ -3,15 +3,15 @@ import { FastifyInstance, FastifyPluginOptions, FastifyPluginAsync } from 'fasti
 import fastifyHelmet from 'fastify-helmet'
 import fastifyCookie from 'fastify-cookie'
 import fastifyCsrf from 'fastify-csrf'
-import fastifyJWT from 'fastify-jwt'
+import fastifyJWT, { FastifyJWTOptions } from 'fastify-jwt'
 
-import { cookieConfig, accessTokenConfig, csrfConfig } from '../../config'
+import { cookieConfig, csrfConfig, jwtConfig } from '../../config'
 
 const plugins: FastifyPluginAsync = async (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
   fastify.register(fastifyHelmet)
   fastify.register(fastifyCookie, cookieConfig)
   fastify.register(fastifyCsrf, csrfConfig)
-  fastify.register(fastifyJWT, accessTokenConfig)
+  fastify.register(fastifyJWT, jwtConfig as FastifyJWTOptions)
 }
 
 export default fp(plugins)

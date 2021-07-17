@@ -1,0 +1,9 @@
+@host = http://localhost:3000
+@route = /auth/logout
+
+### logout
+POST {{host}}{{route}} HTTP/1.1
+
+### check
+
+GET {{host}}/auth HTTP/1.1
