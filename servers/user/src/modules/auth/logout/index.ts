@@ -5,7 +5,7 @@ import * as s from '../schemas'
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
 
-  fastify.post<{}>(
+  fastify.post(
     '/',
     {
       schema: {
@@ -18,6 +18,9 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
     async (request, reply) => {
       try {
         const refreshToken = request.cookies[refreshTokenConfig.name]
+        if (!refreshToken)
+          return { time: reply.getResponseTime(), message: 'ok' }
+
         const payload = fastify.jwt.decode<{ email: string }>(refreshToken)
         if (payload) {
           const redisDelete = await fastify.redis.del(payload.email)

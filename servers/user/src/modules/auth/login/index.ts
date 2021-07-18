@@ -52,7 +52,8 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
         return {
           time: reply.getResponseTime(),
           accessToken: accessToken,
-          expires: timestamp
+          expires: timestamp,
+          tokenType: 'access'
         }
       } catch (error) {
         request.log.warn(`error: ${error}`)

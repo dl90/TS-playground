@@ -24,8 +24,7 @@ export const messageSchema = {
   type: 'object',
   properties: {
     time: { type: 'number' },
-    message: { type: 'string' },
-    token: { type: 'string' }
+    message: { type: 'string' }
   }
 }
 
@@ -42,12 +41,4 @@ export const tokenSchema = {
 export interface ILoginBody {
   email: string
   password: string
-}
-
-export interface ICustomHeaders {
-  customHeader: string
-}
-
-export interface IEmail {
-  email: string
 }

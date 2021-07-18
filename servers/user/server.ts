@@ -7,7 +7,7 @@ import { serverConfig } from './config'
   try {
     const addr = await server.listen(serverConfig.port)
     console.log('serving: ', addr)
-    server.printRoutes()
+    // console.log(server.printRoutes())
   } catch (error) {
     server.log.error(error)
     process.exit(1)
