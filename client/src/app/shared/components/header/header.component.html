@@ -1,0 +1,65 @@
+<mat-toolbar color='primary' variant='dense'>
+  <mat-toolbar-row>
+
+    <button mat-icon-button>
+      <mat-icon>menu_open</mat-icon>
+    </button>
+
+    <div class='logo-container'>
+      <img src='assets/logo-sm.png' alt='logo'>
+      TS-playground
+    </div>
+
+    <div fxFlex fxLayout='row' fxLayoutAlign='flex-end center'>
+      <label class='time'>
+        {{ time.date }}
+        {{ time.hour | number:'2.0' }}:{{ time.minute | number:'2.0'}}:{{ time.second | number:'2.0' }}
+        {{ time.timeZone }}
+      </label>
+
+      <ul fxLayout='row' fxLayoutGap='10px'>
+        <li>
+          <button mat-icon-button [matMenuTriggerFor]='dashboard'>
+            <mat-icon>dashboard</mat-icon>
+          </button>
+          <mat-menu #dashboard='matMenu' xPosition='before'>
+            <ng-template matMenuContent>
+              <button mat-menu-item>
+                <mat-icon>view_compact</mat-icon>
+                View 1
+              </button>
+              <button mat-menu-item>
+                <mat-icon>view_compact</mat-icon>
+                View 2
+              </button>
+            </ng-template>
+          </mat-menu>
+        </li>
+
+        <li>
+          <button mat-icon-button [matMenuTriggerFor]='account'>
+            <mat-icon>manage_accounts</mat-icon>
+          </button>
+          <mat-menu #account='matMenu' xPosition='before'>
+            <ng-template matMenuContent>
+              <button mat-menu-item>
+                <mat-icon>face</mat-icon>
+                Profile
+              </button>
+              <button mat-menu-item>
+                <mat-icon>admin_panel_settings</mat-icon>
+                Settings
+              </button>
+            </ng-template>
+          </mat-menu>
+        </li>
+
+        <li>
+          <button mat-icon-button>
+            <mat-icon>logout</mat-icon>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

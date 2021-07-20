@@ -1,23 +1,40 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
-import { createReadStream } from 'fs'
+import { readFile } from 'fs/promises'
 import { resolve } from 'path'
 
 import * as s from '../schema'
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
+  const publicKey = await readFile(resolve(__dirname, '../../../../keys/jwt.RS256.public.key'))
 
   fastify.get('/',
     {
       schema: {
         response: {
+          200: {
+            type: 'object',
+            properties: {
+              time: { type: 'number' },
+              publicKey: {
+                type: 'object',
+                nullable: false,
+                properties: {
+                  type: { type: 'string' },
+                  data: {
+                    type: 'array',
+                    items: { type: 'number' }
+                  }
+                }
+              }
+            }
+          },
           400: s.messageSchema
         }
       }
     },
     async (request, reply) => {
       try {
-        const stream = createReadStream(resolve(__dirname, '../../../../keys/jwt.RS256.public.key'))
-        reply.send(stream)
+        reply.send({ time: reply.getResponseTime(), publicKey })
       } catch (error) {
         request.log.warn(`error: ${error}`)
         reply

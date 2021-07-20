@@ -1,0 +1,23 @@
+mat-toolbar {
+  min-height: 36px;
+
+  ul li {
+    list-style: none;
+  }
+
+  .time {
+    font-weight: 300;
+    font-size: medium;
+  }
+
+  .logo-container {
+    padding: 0 30px;
+    user-select: none;
+    pointer-events: none;
+
+     img {
+      width: 45px;
+    }
+  }
+}
+
