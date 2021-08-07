@@ -5,7 +5,6 @@ import { MatSidenavModule } from '@angular/material/sidenav'
 
 import { SharedModule } from '../../shared/shared.module'
 import { DashboardModule } from '../../modules/dashboard/dashboard.module'
-import { PostsModule } from '../../modules/posts/posts.module'
 
 import { DefaultComponent } from './default.component'
 
@@ -19,8 +18,7 @@ import { DefaultComponent } from './default.component'
     RouterModule,
     MatSidenavModule,
     SharedModule,
-    DashboardModule,
-    PostsModule
+    DashboardModule
   ]
 })
 export class DefaultModule { }

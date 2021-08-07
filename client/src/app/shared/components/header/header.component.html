@@ -1,8 +1,8 @@
 <mat-toolbar color='primary' variant='dense'>
   <mat-toolbar-row>
 
-    <button mat-icon-button>
-      <mat-icon>menu_open</mat-icon>
+    <button mat-icon-button (click)='toggleSidebar()'>
+      <mat-icon>{{ menuIcon }}</mat-icon>
     </button>
 
     <div class='logo-container'>
@@ -18,23 +18,6 @@
       </label>
 
       <ul fxLayout='row' fxLayoutGap='10px'>
-        <li>
-          <button mat-icon-button [matMenuTriggerFor]='dashboard'>
-            <mat-icon>dashboard</mat-icon>
-          </button>
-          <mat-menu #dashboard='matMenu' xPosition='before'>
-            <ng-template matMenuContent>
-              <button mat-menu-item>
-                <mat-icon>view_compact</mat-icon>
-                View 1
-              </button>
-              <button mat-menu-item>
-                <mat-icon>view_compact</mat-icon>
-                View 2
-              </button>
-            </ng-template>
-          </mat-menu>
-        </li>
 
         <li>
           <button mat-icon-button [matMenuTriggerFor]='account'>

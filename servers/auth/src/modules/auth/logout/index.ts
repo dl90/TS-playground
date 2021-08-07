@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
 
-import { cookieConfig, refreshTokenConfig } from '../../../../config'
+import { cookieSerializeConfig, refreshTokenConfig } from '../../../../config'
 import * as s from '../schemas'
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
@@ -28,7 +28,7 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
             request.log.warn('redis delete failed')
         }
 
-        reply.clearCookie(refreshTokenConfig.name, cookieConfig)
+        reply.clearCookie(refreshTokenConfig.name, cookieSerializeConfig)
         return { time: reply.getResponseTime(), message: 'ok' }
       } catch (error) {
         request.log.warn(`error: ${error}`)

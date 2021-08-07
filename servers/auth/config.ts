@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import { argon2id } from 'argon2'
 import fs from 'fs'
 import { Algorithm } from 'jsonwebtoken'
+import { CookieSerializeOptions } from 'fastify-cookie'
+import { SignOptions } from 'jsonwebtoken'
 
 dotenv.config()
 
@@ -36,12 +38,28 @@ export const redisConfig = {
   closeClient: true
 }
 
+export const corsConfig = {
+  origin: process.env.CLIENT_SERVER || 'http://localhost:4200',
+  credentials: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Access-Control-Allow-Origin',
+    'Allow-Origin-With-Credentials'
+  ]
+}
+
 export const cookieConfig = {
   secret: process.env.COOKIE_SECRET || crypto.randomBytes(32).toString('hex'),
-  path: '/',
-  sameSite: true,
-  httpOnly: true
 }
+
+export const cookieSerializeConfig = {
+  path: '/',
+  sameSite: 'none', // explicit for cross-origin cookies
+  secure: true,     // needs to be https to set cross-origin cookies
+  httpOnly: true
+} as CookieSerializeOptions
 
 export const csrfConfig = {
   cookieOpts: { signed: true }
@@ -57,7 +75,7 @@ export const jwtConfig = {
 
 export const accessTokenConfig = {
   algorithm: 'RS256' as Algorithm,
-  expiresIn: +(process.env.JWT_ACCESS_EXPIRES_IN || 600), // 10min
+  expiresIn: +(process.env.JWT_ACCESS_EXPIRES_IN || 600), // 10 min
   issuer: process.env.JWT_ISSUER || 'localhost'
 }
 

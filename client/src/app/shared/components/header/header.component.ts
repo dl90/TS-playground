@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter } from '@angular/core'
 
 interface time {
   date: string
@@ -17,24 +17,28 @@ interface time {
 })
 export class HeaderComponent implements OnInit {
 
-  timeStamp = new Date()
+  intervalRef: number | undefined
   local = 'en-US'
   time: time
-  interval: number | undefined
+  timeStamp = new Date()
+
+  @Output() toggleSideBarEvt: EventEmitter<boolean> = new EventEmitter()
+  sidebarOpen = true
+  menuIcon = 'menu_open'
 
   constructor () {
     this.time = this.loadTime()
   }
 
   ngOnInit (): void {
-    this.interval = window.setInterval(() => {
+    this.intervalRef = window.setInterval(() => {
       this.tick()
     }, 1000)
   }
 
   ngOnDestroy (): void {
-    if (this.interval)
-      clearInterval(this.interval)
+    if (this.intervalRef)
+      clearInterval(this.intervalRef)
   }
 
   loadTime (): time {
@@ -51,7 +55,7 @@ export class HeaderComponent implements OnInit {
   tick (): void {
     if (this.time.second < 59) {
       this.time.second++
-    } else if (this.time.minute < 59 && this.time.elapsed < 3) {
+    } else if (this.time.minute < 59 && this.time.elapsed < 2) {
       this.time.minute++
       this.time.elapsed++
       this.time.second = 0
@@ -61,4 +65,9 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  toggleSidebar () {
+    this.sidebarOpen = !this.sidebarOpen
+    this.menuIcon = this.sidebarOpen ? 'menu_open' : 'menu'
+    this.toggleSideBarEvt.emit(this.sidebarOpen)
+  }
 }

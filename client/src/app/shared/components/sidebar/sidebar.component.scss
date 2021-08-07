@@ -1,13 +1,30 @@
-:host {
 
+.nav {
+  mat-icon {
+    margin-right: 10px;
+  }
 }
 
 .profile {
   text-align: center;
+  margin: 10px 0;
 
   img {
-    width: 92%;
+    width: 90%;
     border-radius: 50%;
-    border: 1px solid #d1d1d1;
+    border: 1px solid #d6cccc;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
+    margin: auto;
   }
 }

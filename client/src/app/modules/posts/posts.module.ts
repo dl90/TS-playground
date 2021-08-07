@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
+import { PostsRoutingModule } from './posts-routing.module'
 import { PostsComponent } from './posts.component'
 
 
@@ -9,7 +10,8 @@ import { PostsComponent } from './posts.component'
     PostsComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    PostsRoutingModule
   ]
 })
 export class PostsModule { }

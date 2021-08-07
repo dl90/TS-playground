@@ -1,8 +1,8 @@
-<app-header></app-header>
+<app-header (toggleSideBarEvt)='toggleSidebar($event)'></app-header>
 
 <mat-drawer-container>
 
-  <mat-drawer mode="side" opened="true">
+  <mat-drawer mode='side' [opened]='sidebarOpen'>
     <app-sidebar></app-sidebar>
   </mat-drawer>
 

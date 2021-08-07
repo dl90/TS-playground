@@ -1,15 +1,27 @@
 <mat-nav-list>
   <div class='profile'>
-    <h3>Hello username</h3>
-    <img src='assets/dp-ph.gif' alt="profile pic">
+    <ng-container *ngIf='user'>
+      <img src='assets/dp-ph.gif' alt="profile pic">
+      <div class='mat-typography name'>{{ user.email }}</div>
+      <div class='mat-typography'>{{ user.name }}</div>
+    </ng-container>
   </div>
 </mat-nav-list>
 
-
 <mat-divider></mat-divider>
 
-<div>menu links</div>
+<mat-nav-list dense class='nav'>
+  <a mat-list-item [routerLink]="['home']" routerLinkActive='active'>
+    <mat-icon>home</mat-icon>
+    <span>Home</span>
+  </a>
+  <a mat-list-item [routerLink]="['posts']" routerLinkActive='active'>
+    <mat-icon>sticky_note_2</mat-icon>
+    <span>Posts</span>
+  </a>
+  <a mat-list-item [routerLink]="['logs']" routerLinkActive='active'>
+    <mat-icon>bug_report</mat-icon>
+    <span>Logs</span>
+  </a>
 
-<mat-divider></mat-divider>
-
-<div>other info</div>
+</mat-nav-list>
