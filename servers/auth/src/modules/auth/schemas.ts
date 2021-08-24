@@ -1,4 +1,9 @@
 
+export interface ILoginBody {
+  email: string
+  password: string
+}
+
 export const credSchema = {
   type: 'object',
   required: ['email', 'password'],
@@ -8,13 +13,13 @@ export const credSchema = {
       nullable: false,
       minLength: 3,
       maxLength: 254,
-      format: "email"
+      format: 'email'
     },
     password: {
       type: 'string',
       nullable: false,
-      minLength: 6,
-      maxLength: 80,
+      minLength: 8,
+      maxLength: 100,
       pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
     }
   }
@@ -36,9 +41,4 @@ export const tokenSchema = {
     expires: { type: 'number' },
     tokenType: { type: 'string' }
   }
-}
-
-export interface ILoginBody {
-  email: string
-  password: string
 }

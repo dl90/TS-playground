@@ -1,7 +1,59 @@
 <p>login works!</p>
 
-<button (click)='csrf()'>csrf</button>
-
-<button (click)='login()'>login</button>
+<button (click)='check()'>check</button>
 
 <button (click)='refreshToken()'>token</button>
+
+<button (click)='logout()'>logout</button>
+
+
+<div id="login">
+  <h2>Login</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+
+    <div class="row">
+      <label for="email">Email</label>
+      <input id="email" type="text" formControlName="email" />
+    </div>
+    <!-- <div *ngIf="username.invalid && (username.dirty || username.touched)" class="warning"> -->
+    <!-- <div *ngIf="username.errors.required">
+        Username is required.
+      </div>
+      <div *ngIf="username.errors.minlength">
+        Username must be at least 3 characters long.
+      </div>
+      <div *ngIf="username.errors.maxlength">
+        Username must be less than 30 characters long.
+      </div> -->
+    <!-- <div *ngIf="username.errors.pattern">
+        Username can only be letters, numbers, underscores and hyphens.
+      </div> -->
+    <!-- </div> -->
+
+    <div class="row">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" />
+    </div>
+    <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="warning"> -->
+    <!-- <div *ngIf="password.errors.required">
+        Password is required.
+      </div> -->
+    <!-- <div *ngIf="password.errors.minlength">
+        Password must be at least 6 characters long.
+      </div> -->
+    <!-- <div *ngIf="password.errors.maxlength">
+        Password must be less than 100 characters long.
+      </div> -->
+    <!-- <div *ngIf="password.errors.pattern">
+        Password can not contain spaces.
+      </div> -->
+    <!-- </div> -->
+
+    <div class="row">
+      <input type="submit" value="Login" [disabled]="!loginForm.valid">
+    </div>
+
+    <div *ngIf="loginError" class="warning">{{loginError}}</div>
+  </form>
+</div>

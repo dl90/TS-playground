@@ -61,8 +61,15 @@ export const cookieSerializeConfig = {
   httpOnly: true
 } as CookieSerializeOptions
 
+// @TODO fix csrf
 export const csrfConfig = {
-  cookieOpts: { signed: true }
+  cookieOpts: {
+    // signed: true,
+    path: '/',
+    sameSite: 'none',
+    httpOnly: true,
+    secure: true
+  } as CookieSerializeOptions
 }
 
 export const jwtConfig = {

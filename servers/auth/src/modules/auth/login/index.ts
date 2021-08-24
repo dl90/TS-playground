@@ -8,7 +8,6 @@ import bodyErrorHandler from '../bodyErrorHandler'
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
   const db = DAL(fastify.mysql)
-
   fastify.setErrorHandler(bodyErrorHandler)
 
   fastify.post<{ Body: s.ILoginBody }>(
@@ -55,6 +54,7 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
           expires: timestamp,
           tokenType: 'access'
         }
+
       } catch (error) {
         request.log.warn(`error: ${error}`)
         return reply

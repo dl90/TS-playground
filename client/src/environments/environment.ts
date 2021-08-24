@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  authServer: 'http://127.0.0.1:3000'
-};
+  authServerURL: 'https://auth.local.test'
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

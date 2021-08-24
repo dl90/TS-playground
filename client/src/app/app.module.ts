@@ -7,6 +7,8 @@ import { AppComponent } from './app.component'
 import { AppRoutingModule } from './app-routing.module'
 import { DefaultModule } from './layouts/default/default.module'
 
+import { UserService } from './shared/services/user.service'
+
 
 @NgModule({
   declarations: [
@@ -20,7 +22,7 @@ import { DefaultModule } from './layouts/default/default.module'
 
     DefaultModule
   ],
-  providers: [],
+  providers: [UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

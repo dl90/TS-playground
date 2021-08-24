@@ -24,6 +24,7 @@ export default (db: MySQLPromisePool) => {
       )
       if (!pwInsert.insertId)
         throw new Error('')
+
       await conn.commit()
       return true
     } catch (error) {

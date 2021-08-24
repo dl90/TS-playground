@@ -1,12 +1,12 @@
 {
-  "name": "server",
+  "name": "auth",
   "version": "1.0.0",
   "description": "",
+  "main": "server.ts",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=7.0.0"
   },
-  "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",

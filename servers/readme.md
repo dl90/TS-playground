@@ -2,10 +2,11 @@
 
 ## auth
 
-uses NGINX with self signed certificate for TLS termination
+- uses NGINX with self signed certificate for TLS termination and custom domain name proxy
+- custom domain name is resolved (DNS) in hosts file /etc/hosts
 
 ```bash
-usr/local/etc/nginx
+/usr/local/etc/nginx
 
 # check config
 sudo nginx -t
@@ -13,6 +14,7 @@ sudo nginx -t
 #self signed cert
 openssl req -config openssl.conf -x509 -newkey rsa:4096 -sha256 -days 365 -nodes \
   -keyout example.key.pem -out example.cert.pem
+
 
 
 # ===============================
@@ -105,6 +107,8 @@ DNS.3       = *.local.test
 # IPv6 localhost
 # DNS.8     = ::1
 
+
+
 # ===============================
 #           nginx.conf
 # ===============================
@@ -152,12 +156,13 @@ http {
         # ssl_stapling on;
         # ssl_stapling_verify on;
 
-        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";
         add_header X-Frame-Options DENY;
-        add_header X-Content-Type-Options nosniff;
-        add_header X-XSS-Protection "1; mode=block";
+        add_header X-XSS-Protection "1; mode=block;";
 
-        proxy_cookie_path / "/; secure; HttpOnly; SameSite=none";
+        # handled by server (helmet)
+        # add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";
+        # add_header X-Content-Type-Options nosniff;
+        # proxy_cookie_path / "/; secure; HttpOnly; SameSite=None;";
 
         location / {
             proxy_pass http://localhost:9999;
@@ -181,5 +186,29 @@ http {
     include servers/*;
 }
 
+
+
+# ===============================
+#           /etc/hosts
+# ===============================
+
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+
+127.0.0.1       localhost
+255.255.255.255 broadcasthost
+::1             localhost
+
+127.0.0.1 local.test
+127.0.0.1 auth.local.test
+
+# Added by Docker Desktop
+# To allow the same kube context to work on the host and the container:
+127.0.0.1 kubernetes.docker.internal
+# End of section
 
 ```

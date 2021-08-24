@@ -18,7 +18,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit (): void {
     this.userService.userObservable.subscribe(u => this.user = u)
-    this.userService.hydrate({ email: 'abc123', name: 'test' })
+    this.userService.setUser({ email: 'test@test.com', name: 'test' })
     this.userService.setEmail('test@test.com')
   }
 

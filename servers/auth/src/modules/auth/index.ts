@@ -2,10 +2,12 @@ import { FastifyInstance, FastifyServerOptions } from 'fastify'
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
 
-  fastify.get('/', async (request, reply) => {
+  fastify.get('/', {
+    // onRequest: fastify.csrfProtection
+  }, async (request, reply) => {
     console.debug(request.headers)
-    console.debug(request.cookies)
-    await reply.generateCsrf()
+    // const token = await reply.generateCsrf()
+    // reply.setCookie('_csrf', '')
     return { time: reply.getResponseTime(), message: 'ok' }
   })
 
