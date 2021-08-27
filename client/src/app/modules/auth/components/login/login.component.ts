@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms'
 
-import { AuthService, Callback } from '@app/modules/auth/services/auth.service'
+import { AuthService, Callback } from '../../services/auth.service'
 import { emailRgx, passwordRgx } from '@app/util/regex'
 
 @Component({
@@ -12,8 +12,7 @@ import { emailRgx, passwordRgx } from '@app/util/regex'
 })
 export class LoginComponent implements OnInit {
 
-  private authService: AuthService
-
+  hidePassword = true
   loginError = ''
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -25,17 +24,39 @@ export class LoginComponent implements OnInit {
     ]),
     password: new FormControl('', [
       Validators.required,
-      Validators.minLength(8),
-      Validators.maxLength(100),
-      Validators.pattern(passwordRgx)
+      // Validators.minLength(8),
+      // Validators.maxLength(100),
+      // Validators.pattern(passwordRgx)
     ])
   })
 
-  constructor (authService: AuthService) {
-    this.authService = authService
-  }
+  constructor (
+    private authService: AuthService
+  ) { }
 
   ngOnInit (): void { }
+
+  emailErrorMessage (): string | undefined {
+    if (!this.email)
+      return
+
+    for (const error in this.email.errors) {
+      switch (error) {
+        case 'required':
+          return 'Email is required'
+        case 'minlength':
+          return 'Email must be at least 3 characters long'
+        case 'maxlength':
+          return 'Email cannot be more than 254 characters long'
+        case 'pattern':
+          return 'Email must be a valid email address'
+        default:
+          return 'Email is invalid'
+      }
+    }
+
+    return
+  }
 
   check (): void {
     try {
@@ -70,16 +91,17 @@ export class LoginComponent implements OnInit {
       this.authService.login(
         this.email?.value,
         this.password?.value,
-        this.loginCallback)
+        this.loginCallback
+      )
     }
   }
 
-  private loginCallback: Callback = (err, data) => {
+  private loginCallback: Callback = err => {
     if (err) {
-      console.log(err.error)
-    } else if (data) {
-      console.log('success', data)
+      this.loginError = err.message
+      this.password?.setValue('')
+    } else {
+      this.loginError = ''
     }
   }
-
 }

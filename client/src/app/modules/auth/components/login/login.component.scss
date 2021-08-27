@@ -1,0 +1,27 @@
+.login-card {
+  width: 60%;
+  max-width: 600px;
+  min-width: 400px;
+  height: 400px;
+
+  margin: auto;
+  position: relative;
+  top: 50%;
+  margin-top: -200px;
+
+  form {
+    width: 90%;
+    margin: auto;
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  .button-row {
+    margin-top: 20px;
+    button {
+      margin: 10px;
+    }
+  }
+}

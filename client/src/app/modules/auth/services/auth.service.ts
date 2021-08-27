@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { environment } from 'environments/environment'
 import { UserService, AccessToken } from '@app/shared/services/user.service'
@@ -17,7 +18,7 @@ export interface MessageResponse {
   readonly time: number
 }
 
-export type Callback = (err: null | HttpErrorResponse, data?: TokenResponse) => void
+export type Callback = (err: null | MessageResponse) => void
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,24 @@ export class AuthService {
     }
   }
 
+  private handelError (): void {
+    this.userService.setToken(null)
+    // this.logout().subscribe()
+  }
+
+  private parseError (err: HttpErrorResponse): MessageResponse {
+    const { message, time } = err.error
+    return this.cleanObj({ message, time })
+  }
+
+  private cleanObj (obj: any): any {
+    const newObj = Object.create(null)
+    Object.assign(newObj, obj)
+    Object.freeze(newObj)
+
+    return newObj
+  }
+
   login (email: string, password: string, cb: Callback): void {
     this.http.post<TokenResponse>(
       this.url + '/auth/login',
@@ -50,10 +69,11 @@ export class AuthService {
       .subscribe(
         (res: TokenResponse) => {
           this.handelSuccess(res)
-          cb(null, res)
+          cb(null)
         },
         (err: HttpErrorResponse) => {
-          cb(err)
+          this.handelError()
+          cb(this.parseError(err))
         }
       )
   }
@@ -72,13 +92,15 @@ export class AuthService {
     // .pipe(catchError(this.handelError))
   }
 
-  logout (): Observable<HttpResponse<MessageResponse>> {
+  logout (): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(
       this.url + '/auth/logout',
       {},
-      { observe: 'response', withCredentials: true }
+      { withCredentials: true }
     )
-    // .pipe(catchError(this.handelError))
+      .pipe(
+        map(this.cleanObj)
+      )
   }
 
   check (): Observable<HttpResponse<MessageResponse>> {
@@ -86,6 +108,5 @@ export class AuthService {
       this.url + '/auth',
       { observe: 'response', withCredentials: true }
     )
-    // .pipe(catchError(this.handelError))
   }
 }

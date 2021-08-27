@@ -50,7 +50,7 @@ export class UserService {
     this.accessToken.next(null)
   }
 
-  setToken (token: AccessToken): void {
+  setToken (token: null | AccessToken): void {
     this.accessToken.next(token)
   }
 

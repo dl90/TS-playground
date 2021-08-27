@@ -1,59 +1,40 @@
-<p>login works!</p>
+<mat-card class="login-card">
 
-<button (click)='check()'>check</button>
+  <mat-card-header>
+    <mat-card-title>Login</mat-card-title>
+  </mat-card-header>
 
-<button (click)='refreshToken()'>token</button>
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
 
-<button (click)='logout()'>logout</button>
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your email</mat-label>
+        <input type="text" matInput placeholder="test@test.com" formControlName="email" required>
+        <mat-error *ngIf="email && email.invalid && (email.dirty || email.touched)">{{emailErrorMessage()}}</mat-error>
+      </mat-form-field>
 
+      <mat-form-field appearance="fill">
+        <mat-label>Enter your password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+        <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" tabindex="-1">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
 
-<div id="login">
-  <h2>Login</h2>
-
-  <form [formGroup]="loginForm" (ngSubmit)="submit()">
-
-    <div class="row">
-      <label for="email">Email</label>
-      <input id="email" type="text" formControlName="email" />
-    </div>
-    <!-- <div *ngIf="username.invalid && (username.dirty || username.touched)" class="warning"> -->
-    <!-- <div *ngIf="username.errors.required">
-        Username is required.
+      <div class="row">
+        <button type="submit" mat-raised-button [disabled]="!loginForm.valid">Login</button>
       </div>
-      <div *ngIf="username.errors.minlength">
-        Username must be at least 3 characters long.
-      </div>
-      <div *ngIf="username.errors.maxlength">
-        Username must be less than 30 characters long.
-      </div> -->
-    <!-- <div *ngIf="username.errors.pattern">
-        Username can only be letters, numbers, underscores and hyphens.
-      </div> -->
-    <!-- </div> -->
 
-    <div class="row">
-      <label for="password">Password</label>
-      <input id="password" type="password" formControlName="password" />
-    </div>
-    <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="warning"> -->
-    <!-- <div *ngIf="password.errors.required">
-        Password is required.
-      </div> -->
-    <!-- <div *ngIf="password.errors.minlength">
-        Password must be at least 6 characters long.
-      </div> -->
-    <!-- <div *ngIf="password.errors.maxlength">
-        Password must be less than 100 characters long.
-      </div> -->
-    <!-- <div *ngIf="password.errors.pattern">
-        Password can not contain spaces.
-      </div> -->
-    <!-- </div> -->
+      <div *ngIf="loginError" class="warning">{{loginError}}</div>
+    </form>
+  </mat-card-content>
 
-    <div class="row">
-      <input type="submit" value="Login" [disabled]="!loginForm.valid">
-    </div>
-
-    <div *ngIf="loginError" class="warning">{{loginError}}</div>
-  </form>
-</div>
+  <mat-divider></mat-divider>
+  <div class='button-row'>
+    <h1>for testing</h1>
+    <button mat-raised-button (click)="check()">check</button>
+    <button mat-raised-button (click)="refreshToken()">token</button>
+    <button mat-raised-button color='warn' (click)="logout()">logout</button>
+  </div>
+</mat-card>
