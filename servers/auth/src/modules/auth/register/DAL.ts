@@ -1,18 +1,19 @@
 import { MySQLPromisePool } from 'fastify-mysql'
 import { RowDataPacket, OkPacket } from 'mysql2'
 
-interface IEmail extends RowDataPacket {
+export interface IEmail extends RowDataPacket {
   email: string
 }
 
+
 export default (db: MySQLPromisePool) => {
 
-  const getEmail = async (email: string) => {
+  const getEmail = async (email: string): Promise<IEmail> => {
     const [row] = await db.query<IEmail[]>('SELECT `email` FROM `user` WHERE `email` = ?', [email])
     return row[0]
   }
 
-  const insertEmailHash = async (email: string, hash: string) => {
+  const insertEmailHash = async (email: string, hash: string): Promise<Boolean> => {
     let conn
     try {
       conn = await db.getConnection()

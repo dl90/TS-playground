@@ -1,4 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
+
+import { UserService, User } from '@app/shared/services/user.service'
 
 interface time {
   date: string
@@ -17,23 +19,26 @@ interface time {
 })
 export class HeaderComponent implements OnInit {
 
-  intervalRef: number | undefined
-  local = 'en-US'
-  time: time
-  timeStamp = new Date()
+  private intervalRef: number | undefined
+  private local = 'en-US'
+  private timeStamp!: Date
 
-  @Output() toggleSideBarEvt: EventEmitter<boolean> = new EventEmitter()
-  sidebarOpen = true
-  menuIcon = 'menu_open'
+  @Output() sidebarOpenChange: EventEmitter<boolean> = new EventEmitter()
+  @Input() sidebarOpen!: boolean
 
-  constructor () {
-    this.time = this.loadTime()
-  }
+  time!: time
+  user!: User | null
+
+  constructor (
+    private userService: UserService
+  ) { }
 
   ngOnInit (): void {
-    this.intervalRef = window.setInterval(() => {
-      this.tick()
-    }, 1000)
+    this.timeStamp = new Date()
+    this.time = this.loadTime()
+    this.intervalRef = window.setInterval(() => this.tick(), 1000)
+
+    this.userService.userObservable.subscribe(user => this.user = user)
   }
 
   ngOnDestroy (): void {
@@ -66,8 +71,6 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleSidebar () {
-    this.sidebarOpen = !this.sidebarOpen
-    this.menuIcon = this.sidebarOpen ? 'menu_open' : 'menu'
-    this.toggleSideBarEvt.emit(this.sidebarOpen)
+    this.sidebarOpenChange.emit(!this.sidebarOpen)
   }
 }

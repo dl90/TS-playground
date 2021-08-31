@@ -14,9 +14,7 @@ export interface AccessToken {
 }
 
 
-@Injectable(
-  // {  providedIn: 'root'}
-)
+@Injectable()
 export class UserService {
 
   private user = new BehaviorSubject<User | null>(null)

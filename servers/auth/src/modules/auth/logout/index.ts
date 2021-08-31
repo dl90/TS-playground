@@ -3,6 +3,7 @@ import { FastifyInstance, FastifyServerOptions } from 'fastify'
 import { cookieSerializeConfig, refreshTokenConfig } from '../../../../config'
 import * as s from '../schemas'
 
+
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
 
   fastify.post(
@@ -22,14 +23,16 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
           return { time: reply.getResponseTime(), message: 'ok' }
 
         const payload = fastify.jwt.decode<{ email: string }>(refreshToken)
-        if (payload) {
-          const redisDelete = await fastify.redis.del(payload.email)
-          if (!redisDelete)
+        if (payload && payload.email) {
+          const redisDeleted = await fastify.redis.del(payload.email)
+          if (!redisDeleted)
             request.log.warn('redis delete failed')
         }
 
-        reply.clearCookie(refreshTokenConfig.name, cookieSerializeConfig)
-        return { time: reply.getResponseTime(), message: 'ok' }
+        return reply
+          .clearCookie(refreshTokenConfig.name, cookieSerializeConfig)
+          .send({ time: reply.getResponseTime(), message: 'ok' })
+
       } catch (error) {
         request.log.warn(`error: ${error}`)
         return reply
@@ -38,4 +41,5 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
       }
     }
   )
+
 }

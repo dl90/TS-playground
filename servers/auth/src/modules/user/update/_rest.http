@@ -1,0 +1,23 @@
+@host = https://auth.local.test
+@route = /user/update
+
+
+### email
+POST {{host}}{{route}}/email HTTP/1.1
+content-type: application/json
+
+{
+  "email": "new@test.com"
+}
+
+### password
+POST {{host}}{{route}}/password HTTP/1.1
+content-type: application/json
+
+{
+  "password": "Test!123"
+}
+
+
+### check
+GET {{host}} HTTP/1.1

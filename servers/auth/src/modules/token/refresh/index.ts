@@ -4,24 +4,19 @@ import { promisify } from 'util'
 import * as s from '../schema'
 import { refreshTokenConfig, accessTokenConfig } from '../../../../config'
 
-interface IDecodedJWT {
+interface IDecodedToken {
   email: string,
   iat: number,
   exp: number,
   iss: string,
 }
 
-export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
 
-  function verifyDecodedToken (data: unknown): asserts data is IDecodedJWT {
-    if (!(data instanceof Object))
-      throw new Error('token is not object')
-    if (!('email' in data))
-      throw new Error('token does not contain email')
-  }
+export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
 
   fastify.get('/',
     {
+      preValidation: [fastify.verifyJWT],
       schema: {
         response: {
           200: s.tokenSchema,
@@ -31,27 +26,27 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
     },
     async (request, reply) => {
       try {
+        const { email } = request.user as IDecodedToken
         const refreshToken = request.cookies[refreshTokenConfig.name]
         if (!refreshToken)
           throw new Error('no token')
 
-        const valid: unknown = fastify.jwt.verify(refreshToken)
-        verifyDecodedToken(valid)
+        console.log(request.user)
 
         const getAsync = promisify(fastify.redis.get).bind(fastify.redis)
-        const exist = await getAsync(valid.email)
-        if (!exist)
+        const redisToken = await getAsync(email)
+        if (!redisToken)
           throw new Error('token not found in redis')
 
-        const extend = await fastify.redis.expire(valid.email, refreshTokenConfig.sign.expiresIn)
+        if (redisToken !== refreshToken)
+          throw new Error('token does not match with token stored in redis')
+
+        const extend = await fastify.redis.expire(email, refreshTokenConfig.sign.expiresIn)
         if (!extend)
           throw new Error('redis TTL refresh failed')
 
-        if (exist !== refreshToken)
-          throw new Error('token does not match with token stored in redis')
-
         const timestamp = Date.now() + (accessTokenConfig.expiresIn * 1000)
-        const accessToken = fastify.jwt.sign({ email: valid.email }, accessTokenConfig)
+        const accessToken = fastify.jwt.sign({ email: email }, accessTokenConfig)
         return {
           time: reply.getResponseTime(),
           accessToken: accessToken,
@@ -67,4 +62,5 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
       }
     }
   )
+
 }

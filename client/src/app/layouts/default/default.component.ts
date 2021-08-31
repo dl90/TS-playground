@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core'
 
 @Component({
-  selector: 'app-default',
+  selector: 'app-layout-default',
   templateUrl: './default.component.html',
   styleUrls: ['./default.component.scss']
 })
 export class DefaultComponent implements OnInit {
 
-  sidebarOpen = true
+  sidebarOpen: boolean = false
 
   constructor () { }
 
   ngOnInit (): void { }
 
-  toggleSidebar ($event: boolean) {
-    this.sidebarOpen = $event
+  closeSidebar (): void {
+    this.sidebarOpen = false
   }
 
 }

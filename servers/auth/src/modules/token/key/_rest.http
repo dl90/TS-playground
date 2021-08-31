@@ -1,6 +1,6 @@
 @host = https://auth.local.test
 @route = /token/key
 
-### get public key
 
+### get public key
 GET {{host}}{{route}} HTTP/1.1

@@ -29,7 +29,8 @@ export const messageSchema = {
   type: 'object',
   properties: {
     time: { type: 'number' },
-    message: { type: 'string' }
+    message: { type: 'string' },
+    locked_until: { type: 'string' }
   }
 }
 

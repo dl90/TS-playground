@@ -1,0 +1,10 @@
+@host = https://auth.local.test
+@route = /user/delete
+
+
+### delete
+DELETE {{host}}{{route}} HTTP/1.1
+
+
+### check
+GET {{host}} HTTP/1.1

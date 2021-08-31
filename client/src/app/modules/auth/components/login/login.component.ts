@@ -6,7 +6,7 @@ import { AuthService, Callback } from '../../services/auth.service'
 import { emailRgx, passwordRgx } from '@app/util/regex'
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-auth-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

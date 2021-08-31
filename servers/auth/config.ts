@@ -4,7 +4,7 @@ import { argon2id } from 'argon2'
 import fs from 'fs'
 import { Algorithm } from 'jsonwebtoken'
 import { CookieSerializeOptions } from 'fastify-cookie'
-import { SignOptions } from 'jsonwebtoken'
+
 
 dotenv.config()
 
@@ -61,7 +61,6 @@ export const cookieSerializeConfig = {
   httpOnly: true
 } as CookieSerializeOptions
 
-// @TODO fix csrf
 export const csrfConfig = {
   cookieOpts: {
     // signed: true,
@@ -78,6 +77,7 @@ export const jwtConfig = {
     public: fs.readFileSync(__dirname + '/keys/jwt.RS256.public.key')
   },
   verify: { issuer: process.env.JWT_ISSUER || 'localhost' },
+  cookie: { cookieName: process.env.JWT_COOKIE_NAME || 'jwt' }
 }
 
 export const accessTokenConfig = {
@@ -87,7 +87,7 @@ export const accessTokenConfig = {
 }
 
 export const refreshTokenConfig = {
-  name: 'refresh',
+  name: process.env.JWT_COOKIE_NAME || 'jwt',
   sign: {
     algorithm: 'RS256' as Algorithm,
     expiresIn: +(process.env.JWT_REFRESH_EXPIRES_IN || 86400), // 1 days

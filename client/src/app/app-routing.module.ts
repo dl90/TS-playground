@@ -3,7 +3,6 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router'
 
 import { DefaultComponent } from './layouts/default/default.component'
 import { DashboardComponent } from './modules/dashboard/dashboard.component'
-import { AuthModule } from '@app/modules/auth/auth.module'
 
 const routes: Routes = [
   {

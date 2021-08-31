@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 import * as s from '../schema'
 
+
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
   const publicKey = await readFile(resolve(__dirname, '../../../../keys/jwt.RS256.public.key'))
 
@@ -43,4 +44,5 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
       }
     }
   )
+
 }

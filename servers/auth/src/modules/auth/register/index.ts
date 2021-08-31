@@ -1,10 +1,16 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify'
 import argon2 from 'argon2'
 
-import { argon2Config, refreshTokenConfig, accessTokenConfig, cookieSerializeConfig } from '../../../../config'
-import DAL from './DAL'
+import {
+  argon2Config,
+  refreshTokenConfig,
+  accessTokenConfig,
+  cookieSerializeConfig
+} from '../../../../config'
+import DAL, { IEmail } from './DAL'
 import * as s from '../schemas'
 import bodyErrorHandler from '../bodyErrorHandler'
+
 
 export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
   const db = DAL(fastify.mysql)
@@ -23,35 +29,38 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
         }
       }
     },
-    async (request, reply) => {
+    async (request, reply): Promise<void> => {
       const { email, password } = request.body
 
       try {
-        const exist = await db.getEmail(email)
+        const exist: IEmail = await db.getEmail(email)
         if (exist)
           throw new Error('email already exists')
 
         const hash = await argon2.hash(password, argon2Config)
-        const mysqlInsert = await db.insertEmailHash(email, hash)
-        if (!mysqlInsert)
+        const inserted = await db.insertEmailHash(email, hash)
+        if (!inserted)
           throw new Error('db insert failed')
 
         const refreshToken = fastify.jwt.sign({ email }, refreshTokenConfig.sign)
-        const redisInsert = await fastify.redis.set(email, refreshToken, 'EX', refreshTokenConfig.sign.expiresIn)
-        if (!redisInsert)
+        const redisInserted = await fastify.redis.set(email, refreshToken, 'EX', refreshTokenConfig.sign.expiresIn)
+        if (!redisInserted)
           throw new Error('redis insert failed')
 
         const timestamp = Date.now() + (accessTokenConfig.expiresIn * 1000)
         const accessToken = fastify.jwt.sign({ email }, accessTokenConfig)
-        reply.setCookie(refreshTokenConfig.name, refreshToken, cookieSerializeConfig)
-        return {
-          time: reply.getResponseTime(),
-          accessToken: accessToken,
-          expires: timestamp,
-          tokenType: 'access'
-        }
-      }
-      catch (error) {
+
+        return reply
+          .code(201)
+          .setCookie(refreshTokenConfig.name, refreshToken, cookieSerializeConfig)
+          .send({
+            time: reply.getResponseTime(),
+            accessToken: accessToken,
+            expires: timestamp,
+            tokenType: 'access'
+          })
+
+      } catch (error) {
         request.log.warn(`error: ${error}`)
         return reply
           .code(400)

@@ -1,6 +1,6 @@
 @host = https://auth.local.test
 @route = /token/refresh
 
-### refresh
 
+### refresh
 GET {{host}}{{route}} HTTP/1.1

@@ -6,22 +6,23 @@ CREATE TABLE `user` (
   `last_accessed`  TIMESTAMP
 );
 
-CREATE TABLE `profile` (
-  `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  `user_id`        INT UNSIGNED UNIQUE NOT NULL,
-  `first_name`     VARCHAR(255) NOT NULL,
-  `last_name`      VARCHAR(255) NOT NULL,
-  `dp_url`         VARCHAR(255),
+-- CREATE TABLE `profile` (
+--   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+--   `user_id`        INT UNSIGNED UNIQUE NOT NULL,
+--   `first_name`     VARCHAR(255) NOT NULL,
+--   `last_name`      VARCHAR(255) NOT NULL,
+--   `dp_url`         VARCHAR(255),
 
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
-);
+--   FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
+-- );
 
 CREATE TABLE `password` (
   `id`             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   `user_id`        INT UNSIGNED UNIQUE NOT NULL,
   `hash`           CHAR(97) NOT NULL,
   `previous`       CHAR(97),
-  `attempt`        TINYINT UNSIGNED DEFAULT 0,
+  `bad_attempt`    TINYINT UNSIGNED DEFAULT 0,
+  `locked_until`   TIMESTAMP,
   `created_at`     TIMESTAMP NOT NULL DEFAULT NOW(),
   `updated_at`     TIMESTAMP,
 

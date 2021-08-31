@@ -1,5 +1,6 @@
 import fastJson from 'fast-json-stringify'
 
+
 const parse = fastJson({
   type: 'object',
   properties: {

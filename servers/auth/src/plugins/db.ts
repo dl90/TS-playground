@@ -12,6 +12,7 @@ declare module 'fastify' {
   }
 }
 
+
 const dbs: FastifyPluginAsync = async (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
   fastify.register(fastifyMySQL, {
     promise: true,

@@ -1,12 +1,16 @@
 @host = https://auth.local.test
 @route = /auth/login
 
-### login
 
+### login
 POST {{host}}{{route}} HTTP/1.1
 content-type: application/json
 
 {
-  "email": "test@test.com",
+  "email": "new@test.com",
   "password": "Test!123"
 }
+
+
+### check
+GET {{host}} HTTP/1.1

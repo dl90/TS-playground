@@ -1,6 +1,7 @@
 import app from './src/app'
 import { serverConfig } from './config'
 
+
 (async () => {
   const server = await app({ logger: true })
 
