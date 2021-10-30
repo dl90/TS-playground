@@ -1,10 +1,7 @@
 .login-card {
   width: 400px;
-  height: 400px;
-
   margin: auto;
-  position: relative;
-  top: 50%;
+  top: 50vh;
   margin-top: -200px;
 
   form {
@@ -14,12 +11,11 @@
     mat-form-field {
       width: 100%;
     }
-  }
 
-  .button-row {
-    margin-top: 20px;
-    button {
-      margin: 10px;
+    .error-message {
+      color: #f44336;
+      text-align: center;
     }
   }
+
 }

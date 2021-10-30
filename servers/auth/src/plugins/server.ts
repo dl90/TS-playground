@@ -27,13 +27,7 @@ const plugins: FastifyPluginAsync = async (fastify: FastifyInstance, opts: Fasti
   // fastify.register(fastifyCsrf, csrfConfig)
 
   fastify.register(fastifyJWT, jwtConfig as FastifyJWTOptions)
-  fastify.decorate("verifyJWT", async (request: FastifyRequest, reply: FastifyReply) => {
-    try {
-      await request.jwtVerify()
-    } catch (err) {
-      reply.send(err)
-    }
-  })
+  fastify.decorate("verifyJWT", async (request: FastifyRequest, reply: FastifyReply) => await request.jwtVerify())
 }
 
 export default fp(plugins)

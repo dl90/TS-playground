@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms'
+import { FormGroup, Validators, FormBuilder } from '@angular/forms'
+import { Observable, Observer, tap } from 'rxjs'
+import { debounceTime, distinctUntilChanged } from 'rxjs'
+import { Store, select } from '@ngrx/store'
 
-import { AuthService, Callback } from '../../services/auth.service'
-import { emailRgx, passwordRgx } from '@app/util/regex'
+import { emailRgx } from '@app/util/regex'
+import { loginRequestAction } from '../../store/auth.actions'
+import { LoginRequest, MessageResponse } from '../../types/auth-service.interfaces'
+import { selectError, selectIsLoading } from '../../store/auth.selectors'
+
 
 @Component({
   selector: 'app-auth-login',
@@ -12,96 +17,101 @@ import { emailRgx, passwordRgx } from '@app/util/regex'
 })
 export class LoginComponent implements OnInit {
 
+  private debounceTime = 500
+
+  isLoading$!: Observable<boolean>
+  error$!: Observable<MessageResponse | null>
+  loginForm!: FormGroup
   hidePassword = true
   loginError = ''
-  loginForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      // Validators.email,
-      Validators.minLength(3),
-      Validators.maxLength(254),
-      Validators.pattern(emailRgx)
-    ]),
-    password: new FormControl('', [
-      Validators.required,
-      // Validators.minLength(8),
-      // Validators.maxLength(100),
-      // Validators.pattern(passwordRgx)
-    ])
-  })
+  formError = {
+    email: ''
+  }
 
-  constructor (
-    private authService: AuthService
+  constructor(
+    private fb: FormBuilder,
+    private store: Store
   ) { }
 
-  ngOnInit (): void { }
+  ngOnInit(): void {
+    this.initialize()
+  }
 
-  emailErrorMessage (): string | undefined {
-    if (!this.email)
+  private initialize(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(254),
+        Validators.pattern(emailRgx)
+      ]],
+      password: ['', [Validators.required]],
+      rememberMe: [false]
+    })
+
+    this.loginForm.valueChanges.pipe(
+      debounceTime(this.debounceTime),
+      distinctUntilChanged()
+    ).subscribe(this.formErrorHandler.bind(this))
+
+    this.isLoading$ = this.store.pipe(select(selectIsLoading))
+    this.error$ = this.store.pipe(select(selectError))
+    this.error$.subscribe(this.responseErrorHandler.bind(this))
+
+  }
+
+  private formErrorHandler(): void {
+    if (!this.loginForm)
       return
 
-    for (const error in this.email.errors) {
+    for (const error in this.loginForm.get('email')?.errors) {
       switch (error) {
         case 'required':
-          return 'Email is required'
+          this.formError.email = 'Email is required'
+          break;
         case 'minlength':
-          return 'Email must be at least 3 characters long'
+          this.formError.email = 'Email must be at least 3 characters long'
+          break;
         case 'maxlength':
-          return 'Email cannot be more than 254 characters long'
+          this.formError.email = 'Email cannot be more than 254 characters long'
+          break;
         case 'pattern':
-          return 'Email must be a valid email address'
+          this.formError.email = 'Email must be a valid email address'
+          break;
+        case 'login':
+          this.formError.email = ''
+          break;
         default:
-          return 'Email is invalid'
+          this.formError.email = 'Email is invalid'
       }
     }
-
-    return
   }
 
-  check (): void {
-    try {
-      this.authService.check()
-        .subscribe(req => {
-          console.log(req)
-        })
-    } catch (e) {
-      console.log(e.message)
+  private responseErrorHandler(error: MessageResponse | null): void {
+    if (!error)
+      return
+
+    this.loginForm.controls.email.setErrors({ 'login': true })
+    this.loginForm.controls.password.setErrors({ 'login': true })
+    switch (error.status) {
+      case 400: // invalid credentials
+      case 422: // invalid format
+        this.loginError = 'Invalid email or password'
+        break;
+      case 423: // account locked
+        this.loginError = `Account locked until ${new Date(error.lockedUntil!).toLocaleString()}`
+        break;
+      default:
+        this.loginError = 'An error occurred'
     }
   }
 
-  refreshToken (): void {
-    this.authService.refreshToken()
-      .subscribe(res => {
-        console.log(res)
-      })
+  onSubmit(): void {
+    if (this.loginForm.invalid)
+      return
+
+    const loginRequest: LoginRequest = Object.assign({}, this.loginForm.value)
+    this.store.dispatch(loginRequestAction({ credentials: loginRequest }))
   }
 
-  logout (): void {
-    this.authService.logout()
-      .subscribe(res => {
-        console.log(res)
-      })
-  }
-
-  get email (): AbstractControl | null { return this.loginForm.get('email') }
-  get password (): AbstractControl | null { return this.loginForm.get('password') }
-
-  submit (): void {
-    if (this.loginForm.valid) {
-      this.authService.login(
-        this.email?.value,
-        this.password?.value,
-        this.loginCallback
-      )
-    }
-  }
-
-  private loginCallback: Callback = err => {
-    if (err) {
-      this.loginError = err.message
-      this.password?.setValue('')
-    } else {
-      this.loginError = ''
-    }
-  }
 }

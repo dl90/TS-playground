@@ -27,11 +27,11 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
     async (request, reply) => {
       try {
         const { email } = request.user as IDecodedToken
+
+        console.log(request.headers)
         const refreshToken = request.cookies[refreshTokenConfig.name]
         if (!refreshToken)
           throw new Error('no token')
-
-        console.log(request.user)
 
         const getAsync = promisify(fastify.redis.get).bind(fastify.redis)
         const redisToken = await getAsync(email)

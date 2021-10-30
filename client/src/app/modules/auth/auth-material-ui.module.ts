@@ -4,29 +4,24 @@ import { CommonModule } from '@angular/common'
 import { MatCardModule } from '@angular/material/card'
 import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatInputModule } from '@angular/material/input'
 import { MatIconModule } from '@angular/material/icon'
 import { MatDividerModule } from '@angular/material/divider'
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatDividerModule
-  ],
+  imports: [CommonModule],
   exports: [
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatCheckboxModule,
     MatInputModule,
     MatIconModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressBarModule
   ]
 })
-export class AuthUIModule { }
+export class AuthMaterialUIModule { }

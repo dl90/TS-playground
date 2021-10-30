@@ -1,7 +1,8 @@
 
 export interface ILoginBody {
   email: string
-  password: string
+  password: string,
+  rememberMe: boolean
 }
 
 export const credSchema = {
@@ -21,6 +22,10 @@ export const credSchema = {
       minLength: 8,
       maxLength: 100,
       pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+    },
+    rememberMe: {
+      type: 'boolean',
+      nullable: false
     }
   }
 }
@@ -30,7 +35,7 @@ export const messageSchema = {
   properties: {
     time: { type: 'number' },
     message: { type: 'string' },
-    locked_until: { type: 'string' }
+    lockedUntil: { type: 'string' }
   }
 }
 
@@ -39,7 +44,8 @@ export const tokenSchema = {
   properties: {
     time: { type: 'number' },
     accessToken: { type: 'string' },
-    expires: { type: 'number' },
-    tokenType: { type: 'string' }
+    accessTokenExpires: { type: 'number' },
+    refreshToken: { type: 'string' },
+    refreshTokenExpires: { type: 'number' }
   }
 }

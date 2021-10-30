@@ -12,13 +12,13 @@ export class SidebarComponent implements OnInit {
   private userService: UserService
   user: User | null = null
 
-  constructor (userService: UserService) {
+  constructor(userService: UserService) {
     this.userService = userService
   }
 
-  ngOnInit (): void {
+  ngOnInit(): void {
     this.userService.userObservable.subscribe(u => this.user = u)
-    this.userService.setUser({ email: 'test@test.com', name: 'test' })
+    this.userService.setUser({ email: 'test@test.com' })
     this.userService.setEmail('test@test.com')
   }
 

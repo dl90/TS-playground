@@ -5,7 +5,6 @@ import { emailRgx } from '@app/util/regex'
 
 export interface User {
   readonly email: string
-  readonly name: string
 }
 
 export interface AccessToken {
@@ -36,11 +35,6 @@ export class UserService {
   setEmail (email: string): void {
     if (email && emailRgx.test(email) && this.user.getValue())
       this.user.next(Object.assign(this.user.getValue(), { email }))
-  }
-
-  setName (name: string): void {
-    if (name && name.trim().length > 3 && this.user.getValue())
-      this.user.next(Object.assign(this.user.getValue(), { name }))
   }
 
   logout (): void {

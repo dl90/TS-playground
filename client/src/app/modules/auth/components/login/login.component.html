@@ -5,15 +5,15 @@
   </mat-card-header>
 
   <mat-card-content>
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-      <mat-form-field appearance="fill">
+      <mat-form-field>
         <mat-label>Enter your email</mat-label>
-        <input type="text" matInput placeholder="test@test.com" formControlName="email" required>
-        <mat-error *ngIf="email && email.invalid && (email.dirty || email.touched)">{{emailErrorMessage()}}</mat-error>
+        <input matInput type="text" formControlName="email" required placeholder="test@test.com">
+        <mat-error *ngIf="formError.email">{{formError.email}}</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="fill">
+      <mat-form-field>
         <mat-label>Enter your password</mat-label>
         <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
         <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
@@ -22,19 +22,16 @@
         </button>
       </mat-form-field>
 
-      <div class="row">
-        <button type="submit" mat-raised-button [disabled]="!loginForm.valid">Login</button>
-      </div>
+      <mat-checkbox formControlName="rememberMe" color="primary">Remember me</mat-checkbox>
+      <mat-card-actions align="end">
+        <button type="submit" mat-raised-button [disabled]="loginForm.invalid || (isLoading$ | async)">Login</button>
+      </mat-card-actions>
 
-      <div *ngIf="loginError" class="warning">{{loginError}}</div>
+      <div *ngIf="loginError" class="error-message">{{loginError}}</div>
     </form>
   </mat-card-content>
 
-  <mat-divider></mat-divider>
-  <div class='button-row'>
-    <h1>for testing</h1>
-    <button mat-raised-button (click)="check()">check</button>
-    <button mat-raised-button (click)="refreshToken()">token</button>
-    <button mat-raised-button color='warn' (click)="logout()">logout</button>
-  </div>
+  <mat-card-footer>
+    <mat-progress-bar [mode]="(isLoading$ | async) ? 'query' : 'determinate'" value="0"></mat-progress-bar>
+  </mat-card-footer>
 </mat-card>

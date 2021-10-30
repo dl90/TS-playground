@@ -2,13 +2,25 @@
 @route = /auth/login
 
 
-### login
+### login with set cookie
 POST {{host}}{{route}} HTTP/1.1
 content-type: application/json
 
 {
-  "email": "new@test.com",
-  "password": "Test!123"
+  "email": "test@test.com",
+  "password": "Test!123",
+  "rememberMe": true
+}
+
+
+### login without set cookie
+POST {{host}}{{route}} HTTP/1.1
+content-type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "Test!123",
+  "rememberMe": false
 }
 
 

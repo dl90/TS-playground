@@ -29,7 +29,7 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
       }
     },
     async (request, reply): Promise<void> => {
-      const { email, password } = request.body
+      const { email, password, rememberMe = false } = request.body
 
       try {
         const exist: IEmailHash = await db.getEmailHash(email)
@@ -42,7 +42,7 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
             .send({
               time: reply.getResponseTime(),
               message: `user locked until ${exist.locked_until}`,
-              locked_until: exist.locked_until,
+              lockedUntil: exist.locked_until,
             })
 
         const validPW = await argon2.verify(exist.hash, password)
@@ -58,22 +58,26 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
           await db.clearBadAttempt(email)
 
         const refreshToken = fastify.jwt.sign({ email }, refreshTokenConfig.sign)
+        const refreshTokenExpires = Date.now() + (refreshTokenConfig.sign.expiresIn * 1000)
+
         const redisInserted = await fastify.redis.set(email, refreshToken, 'EX', refreshTokenConfig.sign.expiresIn)
         if (!redisInserted)
           throw new Error('redis insert failed')
 
-        const timestamp = Date.now() + (accessTokenConfig.expiresIn * 1000)
+        const accessTokenExpires = Date.now() + (accessTokenConfig.expiresIn * 1000)
         const accessToken = fastify.jwt.sign({ email }, accessTokenConfig)
 
-        return reply
-          .code(200)
-          .setCookie(refreshTokenConfig.name, refreshToken, cookieSerializeConfig)
-          .send({
-            time: reply.getResponseTime(),
-            accessToken: accessToken,
-            expires: timestamp,
-            tokenType: 'access'
-          })
+        reply.code(200)
+        if (rememberMe)
+          reply.setCookie(refreshTokenConfig.name, refreshToken, cookieSerializeConfig)
+
+        return reply.send({
+          time: reply.getResponseTime(),
+          accessToken,
+          accessTokenExpires,
+          refreshToken,
+          refreshTokenExpires
+        })
 
       } catch (error) {
         request.log.warn(`error: ${error}`)

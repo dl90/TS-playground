@@ -43,21 +43,22 @@ export default async (fastify: FastifyInstance, opts: FastifyServerOptions) => {
           throw new Error('db insert failed')
 
         const refreshToken = fastify.jwt.sign({ email }, refreshTokenConfig.sign)
+        const refreshTokenExpires = Date.now() + (refreshTokenConfig.sign.expiresIn * 1000)
         const redisInserted = await fastify.redis.set(email, refreshToken, 'EX', refreshTokenConfig.sign.expiresIn)
         if (!redisInserted)
           throw new Error('redis insert failed')
 
-        const timestamp = Date.now() + (accessTokenConfig.expiresIn * 1000)
+        const accessTokenExpires = Date.now() + (accessTokenConfig.expiresIn * 1000)
         const accessToken = fastify.jwt.sign({ email }, accessTokenConfig)
 
         return reply
           .code(201)
-          .setCookie(refreshTokenConfig.name, refreshToken, cookieSerializeConfig)
           .send({
             time: reply.getResponseTime(),
-            accessToken: accessToken,
-            expires: timestamp,
-            tokenType: 'access'
+            accessToken,
+            accessTokenExpires,
+            refreshToken,
+            refreshTokenExpires
           })
 
       } catch (error) {
